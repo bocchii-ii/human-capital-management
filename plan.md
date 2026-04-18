@@ -87,7 +87,8 @@ A Human Capital Management (HCM) platform for companies to manage **onboarding**
 - Routing: React Router v6.
 - State/data: TanStack Query (server state) + Zustand (client state).
 - Forms: React Hook Form + Zod validation.
-- UI: Tailwind CSS + shadcn/ui (Radix primitives).
+- UI: Tailwind CSS + shadcn/ui (Radix primitives) + Magic UI (animated components).
+- Animation: GSAP (page transitions, micro-interactions, dashboard animations).
 - Charts: Recharts for dashboards.
 - Rich text: TipTap (course lesson authoring).
 - Video: Plyr / Video.js for course playback.
