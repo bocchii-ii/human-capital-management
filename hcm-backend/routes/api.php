@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\ApplicantController;
+use App\Http\Controllers\Api\V1\CertificateController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\LearningPathController;
 use App\Http\Controllers\Api\V1\LearningPathCourseController;
@@ -74,7 +75,12 @@ Route::prefix('v1')->group(function () {
         Route::post('enrollments/{enrollment}/start', [EnrollmentController::class, 'start']);
         Route::post('enrollments/{enrollment}/withdraw', [EnrollmentController::class, 'withdraw']);
         Route::post('enrollments/{enrollment}/lessons/{lesson}/complete', [EnrollmentController::class, 'completeLesson']);
+        Route::post('enrollments/{enrollment}/issue-certificate', [EnrollmentController::class, 'issueCertificate']);
         Route::apiResource('enrollments', EnrollmentController::class);
+
+        // Certificates
+        Route::get('certificates/{certificate}/download', [CertificateController::class, 'download']);
+        Route::apiResource('certificates', CertificateController::class)->only(['index', 'show']);
 
         Route::post('learning-paths/{learningPath}/assign', [LearningPathController::class, 'assign']);
         Route::apiResource('learning-paths', LearningPathController::class);

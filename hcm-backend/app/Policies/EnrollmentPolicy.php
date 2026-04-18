@@ -61,4 +61,9 @@ class EnrollmentPolicy
         return $user->can('training.course.view')
             && $user->employee?->id === $enrollment->employee_id;
     }
+
+    public function issueCertificate(User $user, Enrollment $enrollment): bool
+    {
+        return $user->can('training.enrollment.manage');
+    }
 }

@@ -217,7 +217,7 @@ class QuizAttemptController extends Controller
                     ->first();
 
                 if ($enrollment) {
-                    (new EnrollmentCompletionService())->markLessonCompleted($enrollment, $lesson);
+                    app(EnrollmentCompletionService::class)->markLessonCompleted($enrollment, $lesson);
                 }
             }
         }

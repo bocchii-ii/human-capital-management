@@ -224,8 +224,21 @@ A Human Capital Management (HCM) platform for companies to manage **onboarding**
 - ✅ Feature tests: all 3 controllers + cross-phase integration test (passing quiz auto-marks lesson; failing quiz leaves progress untouched).
 - ✅ **Total: 521 tests, 1013 assertions — all passing.**
 
-#### Phase 4d ⬜
-- ⬜ Certificate generation (PDF via `barryvdh/laravel-dompdf`).
+#### Phase 4d — Certificate Generation ✅
+- ✅ Migration: `certificates` table (unique per enrollment, verifiable `certificate_number`, `pdf_path`; no SoftDeletes — audit records).
+- ✅ Model: `Certificate` with `tenant`, `enrollment`, `employee`, `course` relationships; `Enrollment` updated with `certificate(): HasOne`.
+- ✅ Factory with `withPdf` state.
+- ✅ API Resource: `CertificateResource` (exposes `has_pdf` flag; hides raw path).
+- ✅ Controller: `CertificateController` — `index`, `show`, `download` (streams PDF via `Storage::download`).
+- ✅ Service: `CertificateService` — generates PDF via `barryvdh/laravel-dompdf`, stores to `certificates/{tenant_id}/{cert_number}.pdf`, upserts record; re-issue preserves original certificate number.
+- ✅ Blade template: `resources/views/pdf/certificate.blade.php` (A4 landscape, border design, recipient/course/date/number).
+- ✅ Policy: `CertificatePolicy` (`viewAny`, `view`, `download` — HR Admin sees all, employee sees own).
+- ✅ Routes: `GET /certificates`, `GET /certificates/{certificate}`, `GET /certificates/{certificate}/download`, `POST /enrollments/{enrollment}/issue-certificate`.
+- ✅ Auto-generation: `EnrollmentCompletionService::recompute()` triggers `CertificateService::generate()` the first time an enrollment transitions to `completed`.
+- ✅ `EnrollmentResource` updated to include `certificate` relation when loaded.
+- ✅ Unit tests: `CertificateTest` (9 tests — fillable, casts, relationships, unique constraint, nullable pdf).
+- ✅ Feature tests: `CertificateTest` (14 tests — index, show, download, issue, re-issue, permission gates, auto-generation integration).
+- ✅ **Total: 544 tests, 1056 assertions — all passing.**
 
 ### Phase 5 — Reporting & Polish ⬜
 - ⬜ Admin dashboards (hires per month, onboarding completion %, training compliance).

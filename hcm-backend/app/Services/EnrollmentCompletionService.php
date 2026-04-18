@@ -8,6 +8,8 @@ use App\Models\LessonProgress;
 
 class EnrollmentCompletionService
 {
+    public function __construct(private CertificateService $certificateService) {}
+
     public function markLessonCompleted(Enrollment $enrollment, Lesson $lesson): void
     {
         LessonProgress::updateOrCreate(
@@ -39,6 +41,8 @@ class EnrollmentCompletionService
 
         $attrs = ['progress_percentage' => $percentage];
 
+        $wasCompleted = $enrollment->status === 'completed';
+
         if ($requiredTotal > 0 && $requiredCompleted === $requiredTotal) {
             $attrs['status']       = 'completed';
             $attrs['completed_at'] = $enrollment->completed_at ?? now();
@@ -48,5 +52,9 @@ class EnrollmentCompletionService
         }
 
         $enrollment->update($attrs);
+
+        if (! $wasCompleted && ($attrs['status'] ?? null) === 'completed') {
+            $this->certificateService->generate($enrollment->fresh());
+        }
     }
 }

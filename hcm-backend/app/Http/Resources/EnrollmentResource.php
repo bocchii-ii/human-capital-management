@@ -25,6 +25,7 @@ class EnrollmentResource extends JsonResource
             'employee'            => new EmployeeResource($this->whenLoaded('employee')),
             'course'              => new CourseResource($this->whenLoaded('course')),
             'lesson_progress'     => LessonProgressResource::collection($this->whenLoaded('lessonProgress')),
+            'certificate'         => new CertificateResource($this->whenLoaded('certificate')),
             'created_at'          => $this->created_at,
             'updated_at'          => $this->updated_at,
         ];

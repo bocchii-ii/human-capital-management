@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CertificateResource;
 use App\Http\Resources\EnrollmentResource;
 use App\Models\Course;
 use App\Models\Employee;
@@ -10,6 +11,7 @@ use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\QuizAttempt;
+use App\Services\CertificateService;
 use App\Services\EnrollmentCompletionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -213,6 +215,21 @@ class EnrollmentController extends Controller
         $completionService->markLessonCompleted($enrollment, $lesson);
 
         return new EnrollmentResource($enrollment->fresh()->load(['employee', 'course', 'lessonProgress']));
+    }
+
+    public function issueCertificate(
+        Request $request,
+        Enrollment $enrollment,
+        CertificateService $certificateService
+    ): CertificateResource {
+        $this->authorizeTenant($enrollment);
+        $this->authorize('issueCertificate', $enrollment);
+
+        abort_unless($enrollment->status === 'completed', 422, 'Enrollment must be completed to issue a certificate.');
+
+        $certificate = $certificateService->generate($enrollment);
+
+        return new CertificateResource($certificate->load(['employee', 'course']));
     }
 
     private function authorizeTenant(Enrollment $enrollment): void

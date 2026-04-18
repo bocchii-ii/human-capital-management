@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Applicant;
 use App\Models\Application;
+use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\CourseModule;
 use App\Models\Department;
@@ -25,6 +26,7 @@ use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Policies\ApplicantPolicy;
 use App\Policies\ApplicationPolicy;
+use App\Policies\CertificatePolicy;
 use App\Policies\CourseModulePolicy;
 use App\Policies\CoursePolicy;
 use App\Policies\DepartmentPolicy;
@@ -82,6 +84,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(QuestionOption::class, QuestionOptionPolicy::class);
         Gate::policy(QuizAttempt::class, QuizAttemptPolicy::class);
         Gate::policy(Enrollment::class, EnrollmentPolicy::class);
+        Gate::policy(Certificate::class, CertificatePolicy::class);
         Gate::policy(LearningPath::class, LearningPathPolicy::class);
         Gate::policy(LearningPathCourse::class, LearningPathCoursePolicy::class);
     }

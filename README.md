@@ -94,7 +94,7 @@ The test suite uses SQLite in-memory — no additional database setup needed.
 php artisan test
 ```
 
-Current status: **521 tests, 1013 assertions — all passing.**
+Current status: **544 tests, 1056 assertions — all passing.**
 
 ---
 
@@ -369,7 +369,18 @@ Enrollment statuses: `enrolled → in_progress → completed` (or `withdrawn`)
 | `DELETE` | `/enrollments/{id}` | Delete enrollment (requires `training.enrollment.manage`) |
 | `POST` | `/enrollments/{id}/start` | `enrolled` → `in_progress`, sets `started_at` |
 | `POST` | `/enrollments/{id}/withdraw` | Any active status → `withdrawn` (requires `training.enrollment.manage`) |
-| `POST` | `/enrollments/{id}/lessons/{lessonId}/complete` | Mark a lesson done; quiz-lessons require a passing `QuizAttempt` first; auto-recomputes `progress_percentage` and advances status to `completed` when all required lessons are done |
+| `POST` | `/enrollments/{id}/lessons/{lessonId}/complete` | Mark a lesson done; quiz-lessons require a passing `QuizAttempt` first; auto-recomputes `progress_percentage` and advances status to `completed` when all required lessons are done; **auto-generates a certificate** on first completion |
+| `POST` | `/enrollments/{id}/issue-certificate` | Manually generate / re-issue a certificate for a completed enrollment (requires `training.enrollment.manage`) |
+
+#### Certificates
+
+Certificates are issued automatically when an enrollment completes, and can be re-issued manually by HR. The certificate number is stable across re-issues.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/certificates` | List certificates (non-managers see own only; ordered by `issued_at` desc) |
+| `GET` | `/certificates/{id}` | Show certificate details with employee and course |
+| `GET` | `/certificates/{id}/download` | Stream the certificate PDF (returns 404 if not yet generated) |
 
 #### Learning Paths
 
@@ -434,7 +445,7 @@ Roles and permissions are managed via `spatie/laravel-permission` with `teams` m
 | **1 — Core HR** | ✅ Complete | Departments, positions, employees, org chart |
 | **2 — Hiring / ATS** | ✅ Complete | Requisitions, applicants, pipeline, interviews, offers |
 | **3 — Onboarding** | ✅ Complete | Templates, tasks, assignments, task completion tracking |
-| **4 — Training / LMS** | 🚧 In Progress | **4a ✅** Courses, modules, lessons · **4b ✅** Quizzes, questions, options, attempts · **4c ✅** Enrollment, progress, learning paths · **4d ⬜** Certificates |
+| **4 — Training / LMS** | ✅ Complete | **4a ✅** Courses, modules, lessons · **4b ✅** Quizzes, questions, options, attempts · **4c ✅** Enrollment, progress, learning paths · **4d ✅** Certificates (PDF, auto-issue, download) |
 | **5 — Reporting** | ⬜ Pending | Dashboards, notifications, audit log |
 | **Frontend** | ⬜ Pending | React SPA for all modules |
 
