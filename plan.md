@@ -222,7 +222,7 @@ A Human Capital Management (HCM) platform for companies to manage **onboarding**
 - ⬜ UAT + bugfix.
 
 ### Frontend — React SPA ⬜
-- ⬜ `hcm-frontend/` project scaffold (Vite + React 18 + TypeScript).
+- ⬜ `hcm-frontend/` project scaffold (Vite + React 19 + TypeScript).
 - ⬜ Auth flow (login, token/cookie, permission-aware route guards).
 - ⬜ Core HR screens: employee directory, org chart, department/position management.
 - ⬜ Hiring screens: requisition board, applicant pipeline kanban, interview scheduler, offer workflow.
