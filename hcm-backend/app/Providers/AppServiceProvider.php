@@ -8,9 +8,12 @@ use App\Models\Course;
 use App\Models\CourseModule;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Enrollment;
 use App\Models\Interview;
 use App\Models\JobRequisition;
 use App\Models\Lesson;
+use App\Models\LearningPath;
+use App\Models\LearningPathCourse;
 use App\Models\Offer;
 use App\Models\OnboardingAssignment;
 use App\Models\OnboardingTask;
@@ -26,8 +29,11 @@ use App\Policies\CourseModulePolicy;
 use App\Policies\CoursePolicy;
 use App\Policies\DepartmentPolicy;
 use App\Policies\EmployeePolicy;
+use App\Policies\EnrollmentPolicy;
 use App\Policies\InterviewPolicy;
 use App\Policies\JobRequisitionPolicy;
+use App\Policies\LearningPathCoursePolicy;
+use App\Policies\LearningPathPolicy;
 use App\Policies\LessonPolicy;
 use App\Policies\OfferPolicy;
 use App\Policies\OnboardingAssignmentPolicy;
@@ -75,5 +81,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Question::class, QuestionPolicy::class);
         Gate::policy(QuestionOption::class, QuestionOptionPolicy::class);
         Gate::policy(QuizAttempt::class, QuizAttemptPolicy::class);
+        Gate::policy(Enrollment::class, EnrollmentPolicy::class);
+        Gate::policy(LearningPath::class, LearningPathPolicy::class);
+        Gate::policy(LearningPathCourse::class, LearningPathCoursePolicy::class);
     }
 }

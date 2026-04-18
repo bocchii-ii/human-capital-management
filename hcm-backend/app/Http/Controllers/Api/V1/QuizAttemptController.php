@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\QuizAttemptResource;
 use App\Models\Employee;
+use App\Models\Enrollment;
 use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\QuizAttemptAnswer;
+use App\Services\EnrollmentCompletionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -203,6 +205,22 @@ class QuizAttemptController extends Controller
                 'submitted_at'     => now(),
             ]);
         });
+
+        // Auto-advance enrollment progress when the quiz was passed
+        $quizAttempt->refresh();
+        if ($quizAttempt->passed) {
+            $lesson = $quiz->lesson;
+            if ($lesson) {
+                $enrollment = Enrollment::where('employee_id', $quizAttempt->employee_id)
+                    ->whereHas('course.modules.lessons', fn ($q) => $q->where('lessons.id', $lesson->id))
+                    ->where('status', '!=', 'withdrawn')
+                    ->first();
+
+                if ($enrollment) {
+                    (new EnrollmentCompletionService())->markLessonCompleted($enrollment, $lesson);
+                }
+            }
+        }
 
         return new QuizAttemptResource($quizAttempt->fresh()->load('answers'));
     }

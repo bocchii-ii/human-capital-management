@@ -210,9 +210,21 @@ A Human Capital Management (HCM) platform for companies to manage **onboarding**
 - ✅ Feature tests: all 4 controllers covered including grading correctness for all 3 question types, `is_correct` leak guard, max_attempts enforcement, resubmission block, employee isolation.
 - ✅ **Total: 452 tests, 889 assertions — all passing.**
 
-#### Phase 4c–4d ⬜
-- ⬜ Enrollment & learning paths.
-- ⬜ Progress tracking + completion detection (all required lessons done AND all quizzes passed).
+#### Phase 4c — Enrollment, Progress & Learning Paths ✅
+- ✅ Migrations: `learning_paths`, `learning_path_courses`, `enrollments`, `lesson_progress` (SoftDeletes on `learning_paths`; no SoftDeletes on the rest — status-based lifecycle).
+- ✅ Models: `LearningPath`, `LearningPathCourse`, `Enrollment`, `LessonProgress` with full relationships. `Lesson` updated with `quiz(): HasOne`.
+- ✅ Factories with states (inactive for paths; optional for path courses; enrolled/inProgress/completed/withdrawn for enrollments; completed for lesson progress).
+- ✅ API Resources: `LearningPathResource`, `LearningPathCourseResource`, `EnrollmentResource`, `LessonProgressResource`.
+- ✅ Controllers: `LearningPathController` (+ `assign` fanout), `LearningPathCourseController`, `EnrollmentController` (+ `start`, `withdraw`, `completeLesson`).
+- ✅ Service: `EnrollmentCompletionService` — centralized progress recompute called from `completeLesson` and `QuizAttemptController@submit` (auto-advances lesson when quiz passes).
+- ✅ Policies: `LearningPathPolicy` (+ `assign`), `LearningPathCoursePolicy`, `EnrollmentPolicy` (+ `start`, `withdraw`, `completeLesson`).
+- ✅ All 3 policies registered in `AppServiceProvider`.
+- ✅ Routes: `enrollments` (+ start/withdraw/complete-lesson), `learning-paths` (+ assign), `learning-path-courses`.
+- ✅ Unit tests: `LearningPathTest`, `LearningPathCourseTest`, `EnrollmentTest`, `LessonProgressTest`.
+- ✅ Feature tests: all 3 controllers + cross-phase integration test (passing quiz auto-marks lesson; failing quiz leaves progress untouched).
+- ✅ **Total: 521 tests, 1013 assertions — all passing.**
+
+#### Phase 4d ⬜
 - ⬜ Certificate generation (PDF via `barryvdh/laravel-dompdf`).
 
 ### Phase 5 — Reporting & Polish ⬜

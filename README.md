@@ -94,7 +94,7 @@ The test suite uses SQLite in-memory — no additional database setup needed.
 php artisan test
 ```
 
-Current status: **452 tests, 889 assertions — all passing.**
+Current status: **521 tests, 1013 assertions — all passing.**
 
 ---
 
@@ -356,6 +356,42 @@ Attempt statuses: `in_progress → submitted` (no update endpoint — state chan
 | `POST` | `/quiz-attempts/{id}/submit` | Submit answers and grade (sets `score_percentage`, `passed`) |
 | `DELETE` | `/quiz-attempts/{id}` | Delete attempt (requires `training.enrollment.manage`) |
 
+#### Enrollments
+
+Enrollment statuses: `enrolled → in_progress → completed` (or `withdrawn`)
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/enrollments` | List enrollments (non-managers see own only; filter: `employee_id`, `course_id`, `learning_path_id`, `status`) |
+| `POST` | `/enrollments` | Enroll employee in a published course (re-activates withdrawn enrollment) |
+| `GET` | `/enrollments/{id}` | Show enrollment with employee, course, and lesson progress |
+| `PUT` | `/enrollments/{id}` | Update enrollment (`due_date`; requires `training.enrollment.manage`) |
+| `DELETE` | `/enrollments/{id}` | Delete enrollment (requires `training.enrollment.manage`) |
+| `POST` | `/enrollments/{id}/start` | `enrolled` → `in_progress`, sets `started_at` |
+| `POST` | `/enrollments/{id}/withdraw` | Any active status → `withdrawn` (requires `training.enrollment.manage`) |
+| `POST` | `/enrollments/{id}/lessons/{lessonId}/complete` | Mark a lesson done; quiz-lessons require a passing `QuizAttempt` first; auto-recomputes `progress_percentage` and advances status to `completed` when all required lessons are done |
+
+#### Learning Paths
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/learning-paths` | Paginated list (filter: `search`, `is_active`, `target_department_id`) |
+| `POST` | `/learning-paths` | Create learning path |
+| `GET` | `/learning-paths/{id}` | Show path with ordered courses |
+| `PUT` | `/learning-paths/{id}` | Update path |
+| `DELETE` | `/learning-paths/{id}` | Soft delete |
+| `POST` | `/learning-paths/{id}/assign` | Enroll an employee in every course in the path (idempotent; skips active enrollments, reactivates withdrawn ones) |
+
+#### Learning Path Courses
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/learning-path-courses` | Paginated list ordered by `sort_order` (filter: `learning_path_id`) |
+| `POST` | `/learning-path-courses` | Add a course to a path |
+| `GET` | `/learning-path-courses/{id}` | Show entry |
+| `PUT` | `/learning-path-courses/{id}` | Update `sort_order` or `is_required` |
+| `DELETE` | `/learning-path-courses/{id}` | Remove course from path |
+
 ---
 
 ## RBAC
@@ -398,7 +434,7 @@ Roles and permissions are managed via `spatie/laravel-permission` with `teams` m
 | **1 — Core HR** | ✅ Complete | Departments, positions, employees, org chart |
 | **2 — Hiring / ATS** | ✅ Complete | Requisitions, applicants, pipeline, interviews, offers |
 | **3 — Onboarding** | ✅ Complete | Templates, tasks, assignments, task completion tracking |
-| **4 — Training / LMS** | 🚧 In Progress | **4a ✅** Courses, modules, lessons · **4b ✅** Quizzes, questions, options, attempts · **4c–4d ⬜** Enrollment, certificates |
+| **4 — Training / LMS** | 🚧 In Progress | **4a ✅** Courses, modules, lessons · **4b ✅** Quizzes, questions, options, attempts · **4c ✅** Enrollment, progress, learning paths · **4d ⬜** Certificates |
 | **5 — Reporting** | ⬜ Pending | Dashboards, notifications, audit log |
 | **Frontend** | ⬜ Pending | React SPA for all modules |
 

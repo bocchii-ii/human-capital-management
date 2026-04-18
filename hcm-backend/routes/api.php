@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\V1\ApplicantController;
+use App\Http\Controllers\Api\V1\EnrollmentController;
+use App\Http\Controllers\Api\V1\LearningPathController;
+use App\Http\Controllers\Api\V1\LearningPathCourseController;
 use App\Http\Controllers\Api\V1\CourseController;
 use App\Http\Controllers\Api\V1\CourseModuleController;
 use App\Http\Controllers\Api\V1\LessonController;
@@ -66,6 +69,16 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('question-options', QuestionOptionController::class);
         Route::post('quiz-attempts/{quizAttempt}/submit', [QuizAttemptController::class, 'submit']);
         Route::apiResource('quiz-attempts', QuizAttemptController::class)->except(['update']);
+
+        // Training / LMS — Enrollment & Learning Paths
+        Route::post('enrollments/{enrollment}/start', [EnrollmentController::class, 'start']);
+        Route::post('enrollments/{enrollment}/withdraw', [EnrollmentController::class, 'withdraw']);
+        Route::post('enrollments/{enrollment}/lessons/{lesson}/complete', [EnrollmentController::class, 'completeLesson']);
+        Route::apiResource('enrollments', EnrollmentController::class);
+
+        Route::post('learning-paths/{learningPath}/assign', [LearningPathController::class, 'assign']);
+        Route::apiResource('learning-paths', LearningPathController::class);
+        Route::apiResource('learning-path-courses', LearningPathCourseController::class);
 
         // Onboarding
         Route::apiResource('onboarding-templates', OnboardingTemplateController::class);
