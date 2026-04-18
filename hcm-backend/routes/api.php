@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\V1\ApplicantController;
+use App\Http\Controllers\Api\V1\CourseController;
+use App\Http\Controllers\Api\V1\CourseModuleController;
+use App\Http\Controllers\Api\V1\LessonController;
 use App\Http\Controllers\Api\V1\OnboardingAssignmentController;
 use App\Http\Controllers\Api\V1\OnboardingTaskController;
 use App\Http\Controllers\Api\V1\OnboardingTemplateController;
@@ -46,6 +49,13 @@ Route::prefix('v1')->group(function () {
         Route::post('offers/{offer}/send', [OfferController::class, 'send']);
         Route::patch('offers/{offer}/status', [OfferController::class, 'updateStatus']);
         Route::apiResource('offers', OfferController::class);
+
+        // Training / LMS
+        Route::post('courses/{course}/publish', [CourseController::class, 'publish']);
+        Route::post('courses/{course}/archive', [CourseController::class, 'archive']);
+        Route::apiResource('courses', CourseController::class);
+        Route::apiResource('course-modules', CourseModuleController::class);
+        Route::apiResource('lessons', LessonController::class);
 
         // Onboarding
         Route::apiResource('onboarding-templates', OnboardingTemplateController::class);

@@ -4,10 +4,13 @@ namespace App\Providers;
 
 use App\Models\Applicant;
 use App\Models\Application;
+use App\Models\Course;
+use App\Models\CourseModule;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Interview;
 use App\Models\JobRequisition;
+use App\Models\Lesson;
 use App\Models\Offer;
 use App\Models\OnboardingAssignment;
 use App\Models\OnboardingTask;
@@ -15,10 +18,13 @@ use App\Models\OnboardingTemplate;
 use App\Models\Position;
 use App\Policies\ApplicantPolicy;
 use App\Policies\ApplicationPolicy;
+use App\Policies\CourseModulePolicy;
+use App\Policies\CoursePolicy;
 use App\Policies\DepartmentPolicy;
 use App\Policies\EmployeePolicy;
 use App\Policies\InterviewPolicy;
 use App\Policies\JobRequisitionPolicy;
+use App\Policies\LessonPolicy;
 use App\Policies\OfferPolicy;
 use App\Policies\OnboardingAssignmentPolicy;
 use App\Policies\OnboardingTaskPolicy;
@@ -52,5 +58,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(OnboardingTemplate::class, OnboardingTemplatePolicy::class);
         Gate::policy(OnboardingTask::class, OnboardingTaskPolicy::class);
         Gate::policy(OnboardingAssignment::class, OnboardingAssignmentPolicy::class);
+
+        // Training / LMS
+        Gate::policy(Course::class, CoursePolicy::class);
+        Gate::policy(CourseModule::class, CourseModulePolicy::class);
+        Gate::policy(Lesson::class, LessonPolicy::class);
     }
 }

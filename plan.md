@@ -181,13 +181,27 @@ A Human Capital Management (HCM) platform for companies to manage **onboarding**
 - ✅ Feature tests: all 3 controllers covered (auth, tenant isolation, permission gates, domain rules).
 - ✅ **Total: 274 tests, 558 assertions — all passing.**
 
-### Phase 4 — Training / LMS ⬜
-- ⬜ Course authoring: `courses`, `modules`, `lessons` migrations & models.
+### Phase 4 — Training / LMS 🚧
+
+#### Phase 4a — Course Authoring ✅
+- ✅ Migrations: `courses`, `course_modules`, `lessons` (all SoftDeletes, tenant-scoped).
+- ✅ Models: `Course`, `CourseModule`, `Lesson` with full relationships.
+- ✅ Factories with states (draft/published/archived/inactive for courses; video/pdf/text/quiz/optional for lessons).
+- ✅ API Resources: `CourseResource`, `CourseModuleResource`, `LessonResource`.
+- ✅ Controllers: `CourseController` (+ `publish` + `archive` actions), `CourseModuleController`, `LessonController`.
+- ✅ Policies: `CoursePolicy` (+ `publish` ability), `CourseModulePolicy`, `LessonPolicy`.
+- ✅ All 3 policies registered in `AppServiceProvider`.
+- ✅ Routes: `courses` (+ publish/archive), `course-modules`, `lessons`.
+- ✅ Unit tests: `CourseTest`, `CourseModuleTest`, `LessonTest`.
+- ✅ Feature tests: all 3 controllers covered (auth, tenant isolation, permission gates, domain rules).
+- ✅ **Total: 353 tests, 710 assertions — all passing.**
+
+#### Phase 4b–4d ⬜
 - ⬜ Quiz engine: `quizzes`, `questions`, `answers` + grading logic.
 - ⬜ Enrollment & learning paths.
 - ⬜ Progress tracking + completion detection.
 - ⬜ Certificate generation (PDF via `barryvdh/laravel-dompdf`).
-- ⬜ Permissions: `training.course.publish`, `training.enrollment.manage`, `training.report.view` (already seeded).
+- ⬜ Permissions: `training.enrollment.manage`, `training.report.view` (already seeded).
 
 ### Phase 5 — Reporting & Polish ⬜
 - ⬜ Admin dashboards (hires per month, onboarding completion %, training compliance).
