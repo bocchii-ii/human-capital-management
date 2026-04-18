@@ -94,7 +94,7 @@ The test suite uses SQLite in-memory — no additional database setup needed.
 php artisan test
 ```
 
-Current status: **274 tests, 558 assertions — all passing.**
+Current status: **353 tests, 710 assertions — all passing.**
 
 ---
 
@@ -270,6 +270,46 @@ Represents a template being run for a specific employee. Statuses: `pending → 
 
 ---
 
+### Training / LMS
+
+#### Courses
+
+Course statuses: `draft → published → archived`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/courses` | Paginated list (filter: `status`, `category`, `is_active`, `search`) |
+| `POST` | `/courses` | Create course (starts as `draft`) |
+| `GET` | `/courses/{id}` | Show course with modules and lessons |
+| `PUT` | `/courses/{id}` | Update course details |
+| `DELETE` | `/courses/{id}` | Soft delete |
+| `POST` | `/courses/{id}/publish` | `draft` → `published` (sets `published_at`) |
+| `POST` | `/courses/{id}/archive` | `published` → `archived` |
+
+#### Course Modules
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/course-modules` | Paginated list (filter: `course_id`, `search`), ordered by `sort_order` |
+| `POST` | `/course-modules` | Create module within a course |
+| `GET` | `/course-modules/{id}` | Show module with lessons |
+| `PUT` | `/course-modules/{id}` | Update module |
+| `DELETE` | `/course-modules/{id}` | Soft delete |
+
+#### Lessons
+
+Content types: `video`, `pdf`, `text`, `quiz`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/lessons` | Paginated list (filter: `course_module_id`, `search`), ordered by `sort_order` |
+| `POST` | `/lessons` | Create lesson within a module |
+| `GET` | `/lessons/{id}` | Show lesson |
+| `PUT` | `/lessons/{id}` | Update lesson |
+| `DELETE` | `/lessons/{id}` | Soft delete |
+
+---
+
 ## RBAC
 
 Roles and permissions are managed via `spatie/laravel-permission` with `teams` mode enabled, so each role is scoped per tenant.
@@ -310,7 +350,7 @@ Roles and permissions are managed via `spatie/laravel-permission` with `teams` m
 | **1 — Core HR** | ✅ Complete | Departments, positions, employees, org chart |
 | **2 — Hiring / ATS** | ✅ Complete | Requisitions, applicants, pipeline, interviews, offers |
 | **3 — Onboarding** | ✅ Complete | Templates, tasks, assignments, task completion tracking |
-| **4 — Training / LMS** | ⬜ Pending | Courses, modules, lessons, quizzes, certificates |
+| **4 — Training / LMS** | 🚧 In Progress | **4a ✅** Courses, modules, lessons · **4b–4d ⬜** Quizzes, enrollment, certificates |
 | **5 — Reporting** | ⬜ Pending | Dashboards, notifications, audit log |
 | **Frontend** | ⬜ Pending | React SPA for all modules |
 
