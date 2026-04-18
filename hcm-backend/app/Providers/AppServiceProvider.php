@@ -16,6 +16,10 @@ use App\Models\OnboardingAssignment;
 use App\Models\OnboardingTask;
 use App\Models\OnboardingTemplate;
 use App\Models\Position;
+use App\Models\Question;
+use App\Models\QuestionOption;
+use App\Models\Quiz;
+use App\Models\QuizAttempt;
 use App\Policies\ApplicantPolicy;
 use App\Policies\ApplicationPolicy;
 use App\Policies\CourseModulePolicy;
@@ -30,6 +34,10 @@ use App\Policies\OnboardingAssignmentPolicy;
 use App\Policies\OnboardingTaskPolicy;
 use App\Policies\OnboardingTemplatePolicy;
 use App\Policies\PositionPolicy;
+use App\Policies\QuestionOptionPolicy;
+use App\Policies\QuestionPolicy;
+use App\Policies\QuizAttemptPolicy;
+use App\Policies\QuizPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -63,5 +71,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Course::class, CoursePolicy::class);
         Gate::policy(CourseModule::class, CourseModulePolicy::class);
         Gate::policy(Lesson::class, LessonPolicy::class);
+        Gate::policy(Quiz::class, QuizPolicy::class);
+        Gate::policy(Question::class, QuestionPolicy::class);
+        Gate::policy(QuestionOption::class, QuestionOptionPolicy::class);
+        Gate::policy(QuizAttempt::class, QuizAttemptPolicy::class);
     }
 }

@@ -94,7 +94,7 @@ The test suite uses SQLite in-memory — no additional database setup needed.
 php artisan test
 ```
 
-Current status: **353 tests, 710 assertions — all passing.**
+Current status: **452 tests, 889 assertions — all passing.**
 
 ---
 
@@ -308,6 +308,54 @@ Content types: `video`, `pdf`, `text`, `quiz`
 | `PUT` | `/lessons/{id}` | Update lesson |
 | `DELETE` | `/lessons/{id}` | Soft delete |
 
+#### Quizzes
+
+One quiz per lesson (`content_type=quiz`). Supports `pass_threshold` (%), `max_attempts`, `time_limit_minutes`.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/quizzes` | Paginated list (filter: `lesson_id`, `search`) |
+| `POST` | `/quizzes` | Create quiz for a lesson |
+| `GET` | `/quizzes/{id}` | Show quiz with questions and options |
+| `PUT` | `/quizzes/{id}` | Update quiz settings |
+| `DELETE` | `/quizzes/{id}` | Soft delete |
+
+#### Questions
+
+Question types: `single_choice`, `multiple_choice`, `true_false`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/questions` | Paginated list (filter: `quiz_id`, `search`), ordered by `sort_order` |
+| `POST` | `/questions` | Create question within a quiz |
+| `GET` | `/questions/{id}` | Show question with options |
+| `PUT` | `/questions/{id}` | Update question |
+| `DELETE` | `/questions/{id}` | Soft delete |
+
+#### Question Options
+
+`is_correct` field is hidden from users with only `training.course.view` (learners) — visible only to those with `training.course.manage`.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/question-options` | Paginated list (filter: `question_id`), ordered by `sort_order` |
+| `POST` | `/question-options` | Create option for a question |
+| `GET` | `/question-options/{id}` | Show option |
+| `PUT` | `/question-options/{id}` | Update option |
+| `DELETE` | `/question-options/{id}` | Soft delete |
+
+#### Quiz Attempts
+
+Attempt statuses: `in_progress → submitted` (no update endpoint — state changes via `submit` only).
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/quiz-attempts` | List attempts (non-managers see own only; filter: `quiz_id`, `employee_id`, `status`, `passed`) |
+| `POST` | `/quiz-attempts` | Start attempt (`quiz_id`, `employee_id`; enforces `max_attempts`) |
+| `GET` | `/quiz-attempts/{id}` | Show attempt with answers |
+| `POST` | `/quiz-attempts/{id}/submit` | Submit answers and grade (sets `score_percentage`, `passed`) |
+| `DELETE` | `/quiz-attempts/{id}` | Delete attempt (requires `training.enrollment.manage`) |
+
 ---
 
 ## RBAC
@@ -350,7 +398,7 @@ Roles and permissions are managed via `spatie/laravel-permission` with `teams` m
 | **1 — Core HR** | ✅ Complete | Departments, positions, employees, org chart |
 | **2 — Hiring / ATS** | ✅ Complete | Requisitions, applicants, pipeline, interviews, offers |
 | **3 — Onboarding** | ✅ Complete | Templates, tasks, assignments, task completion tracking |
-| **4 — Training / LMS** | 🚧 In Progress | **4a ✅** Courses, modules, lessons · **4b–4d ⬜** Quizzes, enrollment, certificates |
+| **4 — Training / LMS** | 🚧 In Progress | **4a ✅** Courses, modules, lessons · **4b ✅** Quizzes, questions, options, attempts · **4c–4d ⬜** Enrollment, certificates |
 | **5 — Reporting** | ⬜ Pending | Dashboards, notifications, audit log |
 | **Frontend** | ⬜ Pending | React SPA for all modules |
 

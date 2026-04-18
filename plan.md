@@ -196,12 +196,23 @@ A Human Capital Management (HCM) platform for companies to manage **onboarding**
 - ✅ Feature tests: all 3 controllers covered (auth, tenant isolation, permission gates, domain rules).
 - ✅ **Total: 353 tests, 710 assertions — all passing.**
 
-#### Phase 4b–4d ⬜
-- ⬜ Quiz engine: `quizzes`, `questions`, `answers` + grading logic.
+#### Phase 4b — Quiz Engine ✅
+- ✅ Migrations: `quizzes` (unique per lesson, pass_threshold, max_attempts), `questions` (single_choice/multiple_choice/true_false), `question_options`, `quiz_attempts` (no SoftDeletes — audit history), `quiz_attempt_answers`.
+- ✅ Models: `Quiz`, `Question`, `QuestionOption`, `QuizAttempt`, `QuizAttemptAnswer` with full relationships.
+- ✅ Factories with states (singleChoice/multipleChoice/trueFalse for questions; correct for options; inProgress/submitted/passed/failed for attempts).
+- ✅ API Resources: `QuizResource`, `QuestionResource`, `QuestionOptionResource` (hides `is_correct` from learners), `QuizAttemptResource`, `QuizAttemptAnswerResource`.
+- ✅ Controllers: `QuizController`, `QuestionController`, `QuestionOptionController`, `QuizAttemptController` (+ `submit` action with full grading logic for all question types).
+- ✅ Policies: `QuizPolicy`, `QuestionPolicy`, `QuestionOptionPolicy`, `QuizAttemptPolicy` (employee isolation + enrollment.manage override).
+- ✅ All 4 policies registered in `AppServiceProvider`.
+- ✅ Routes: `quizzes`, `questions`, `question-options`, `quiz-attempts` (except update) + `quiz-attempts/{id}/submit`.
+- ✅ Unit tests: `QuizTest`, `QuestionTest`, `QuestionOptionTest`, `QuizAttemptTest`, `QuizAttemptAnswerTest`.
+- ✅ Feature tests: all 4 controllers covered including grading correctness for all 3 question types, `is_correct` leak guard, max_attempts enforcement, resubmission block, employee isolation.
+- ✅ **Total: 452 tests, 889 assertions — all passing.**
+
+#### Phase 4c–4d ⬜
 - ⬜ Enrollment & learning paths.
-- ⬜ Progress tracking + completion detection.
+- ⬜ Progress tracking + completion detection (all required lessons done AND all quizzes passed).
 - ⬜ Certificate generation (PDF via `barryvdh/laravel-dompdf`).
-- ⬜ Permissions: `training.enrollment.manage`, `training.report.view` (already seeded).
 
 ### Phase 5 — Reporting & Polish ⬜
 - ⬜ Admin dashboards (hires per month, onboarding completion %, training compliance).
