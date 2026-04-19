@@ -37,6 +37,7 @@ class JobRequisitionResource extends JsonResource
             ]),
             'applications_count' => $this->when(isset($this->applications_count), $this->applications_count),
             'created_at'       => $this->created_at,
+            'updated_at'       => $this->updated_at,
         ];
     }
 }

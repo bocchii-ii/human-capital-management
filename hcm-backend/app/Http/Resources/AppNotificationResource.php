@@ -18,6 +18,7 @@ class AppNotificationResource extends JsonResource
             'is_read'    => $this->resource->isRead(),
             'read_at'    => $this->read_at,
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -94,7 +94,7 @@ The test suite uses SQLite in-memory — no additional database setup needed.
 php artisan test
 ```
 
-Current status: **589 tests, 1157 assertions — all passing.**
+Current status: **596 tests, 1164 assertions — all passing.**
 
 ---
 
@@ -487,7 +487,7 @@ Roles and permissions are managed via `spatie/laravel-permission` with `teams` m
 | **2 — Hiring / ATS** | ✅ Complete | Requisitions, applicants, pipeline, interviews, offers |
 | **3 — Onboarding** | ✅ Complete | Templates, tasks, assignments, task completion tracking |
 | **4 — Training / LMS** | ✅ Complete | **4a ✅** Courses, modules, lessons · **4b ✅** Quizzes, questions, options, attempts · **4c ✅** Enrollment, progress, learning paths · **4d ✅** Certificates (PDF, auto-issue, download) |
-| **5 — Reporting** | ✅ Complete | **5a ✅** Dashboard (overview + hiring/onboarding/training) · **5b ✅** Notifications center · **5c ✅** Audit log viewer |
+| **5 — Reporting & Polish** | ✅ Complete | **5a ✅** Dashboard · **5b ✅** Notifications center · **5c ✅** Audit log viewer · **5d ✅** Security hardening, rate limiting, N+1 guards, resource consistency |
 | **Frontend** | ⬜ Pending | React SPA for all modules |
 
 See [`plan.md`](./plan.md) for the full technical specification and detailed roadmap.

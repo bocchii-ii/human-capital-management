@@ -28,6 +28,12 @@ class OfferController extends Controller
             'notes'          => ['nullable', 'string'],
         ]);
 
+        abort_if(
+            ! Application::where('id', $data['application_id'])->where('tenant_id', $tenant->id)->exists(),
+            422,
+            'Application not found in this tenant.'
+        );
+
         // Ensure no existing offer for this application
         abort_if(
             Offer::where('application_id', $data['application_id'])->exists(),

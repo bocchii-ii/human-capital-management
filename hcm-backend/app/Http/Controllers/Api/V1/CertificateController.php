@@ -24,7 +24,7 @@ class CertificateController extends Controller
         }
 
         return CertificateResource::collection(
-            $query->latest('issued_at')->paginate()
+            $query->latest('issued_at')->paginate($request->integer('per_page', 15))
         );
     }
 

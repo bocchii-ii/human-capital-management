@@ -17,6 +17,7 @@ class CourseModuleResource extends JsonResource
             'sort_order'  => $this->sort_order,
             'lessons'     => LessonResource::collection($this->whenLoaded('lessons')),
             'created_at'  => $this->created_at,
+            'updated_at'  => $this->updated_at,
         ];
     }
 }

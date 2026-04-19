@@ -19,6 +19,7 @@ class QuestionResource extends JsonResource
             'explanation'   => $this->explanation,
             'options'       => QuestionOptionResource::collection($this->whenLoaded('options')),
             'created_at'    => $this->created_at,
+            'updated_at'    => $this->updated_at,
         ];
     }
 }

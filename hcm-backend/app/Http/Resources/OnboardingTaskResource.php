@@ -19,6 +19,7 @@ class OnboardingTaskResource extends JsonResource
             'is_required'            => $this->is_required,
             'sort_order'             => $this->sort_order,
             'created_at'             => $this->created_at,
+            'updated_at'             => $this->updated_at,
         ];
     }
 }

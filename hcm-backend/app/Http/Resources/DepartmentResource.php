@@ -26,6 +26,7 @@ class DepartmentResource extends JsonResource
             'positions_count' => $this->when(isset($this->positions_count), $this->positions_count),
             'employees_count' => $this->when(isset($this->employees_count), $this->employees_count),
             'created_at'  => $this->created_at,
+            'updated_at'  => $this->updated_at,
         ];
     }
 }

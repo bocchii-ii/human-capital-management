@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\OnboardingAssignment;
 use App\Models\OnboardingTask;
 use App\Models\OnboardingTaskCompletion;
+use App\Models\OnboardingTemplate;
 use App\Services\AuditService;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
@@ -47,6 +48,18 @@ class OnboardingAssignmentController extends Controller
             'onboarding_template_id' => ['required', 'exists:onboarding_templates,id'],
             'start_date'             => ['required', 'date'],
         ]);
+
+        abort_if(
+            ! Employee::where('id', $data['employee_id'])->where('tenant_id', $tenant->id)->exists(),
+            422,
+            'Employee not found in this tenant.'
+        );
+
+        abort_if(
+            ! OnboardingTemplate::where('id', $data['onboarding_template_id'])->where('tenant_id', $tenant->id)->exists(),
+            422,
+            'Onboarding template not found in this tenant.'
+        );
 
         $assignment = OnboardingAssignment::create(array_merge($data, [
             'tenant_id'   => $tenant->id,

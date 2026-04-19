@@ -19,6 +19,7 @@ class OnboardingAssignmentResource extends JsonResource
             'assigned_by' => new UserResource($this->whenLoaded('assignedBy')),
             'task_completions' => OnboardingTaskCompletionResource::collection($this->whenLoaded('taskCompletions')),
             'created_at'  => $this->created_at,
+            'updated_at'  => $this->updated_at,
         ];
     }
 }

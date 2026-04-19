@@ -27,6 +27,7 @@ class OfferResource extends JsonResource
             'notes'       => $this->notes,
             'application' => new ApplicationResource($this->whenLoaded('application')),
             'created_at'  => $this->created_at,
+            'updated_at'  => $this->updated_at,
         ];
     }
 }

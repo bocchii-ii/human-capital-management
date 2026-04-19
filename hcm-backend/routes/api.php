@@ -30,10 +30,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     // Public auth routes
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
     // Protected + tenant-scoped routes
-    Route::middleware(['auth:sanctum', 'set.tenant'])->group(function () {
+    Route::middleware(['auth:sanctum', 'set.tenant', 'throttle:60,1'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
 

@@ -17,6 +17,7 @@ class CourseModuleController extends Controller
         $tenant = app('tenant');
 
         $modules = CourseModule::where('tenant_id', $tenant->id)
+            ->with('lessons')
             ->when($request->filled('course_id'), fn ($q) => $q->where('course_id', $request->course_id))
             ->when($request->filled('search'), fn ($q) => $q->where('title', 'like', "%{$request->search}%"))
             ->orderBy('sort_order')

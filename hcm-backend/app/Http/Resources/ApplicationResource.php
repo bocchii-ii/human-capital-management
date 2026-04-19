@@ -26,6 +26,7 @@ class ApplicationResource extends JsonResource
             'interviews'       => InterviewResource::collection($this->whenLoaded('interviews')),
             'offer'            => new OfferResource($this->whenLoaded('offer')),
             'created_at'       => $this->created_at,
+            'updated_at'       => $this->updated_at,
         ];
     }
 }

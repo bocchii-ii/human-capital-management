@@ -279,9 +279,14 @@ A Human Capital Management (HCM) platform for companies to manage **onboarding**
   - `EnrollmentCompletionService::recompute` → `enrollment.completed`.
 - ✅ **Total: 589 tests, 1157 assertions — all passing.**
 
-#### Phase 5d ⬜
-- ⬜ Accessibility & performance pass (API pagination defaults, N+1 guards, rate limiting).
-- ⬜ UAT + bugfix.
+#### Phase 5d ✅
+- ✅ **Security** — Tenant boundary checks added to `InterviewController::store`, `OfferController::store`, and `OnboardingAssignmentController::store` (rejects cross-tenant `application_id`, `employee_id`, `onboarding_template_id` with 422).
+- ✅ **Rate limiting** — `throttle:5,1` on `POST /login`; `throttle:60,1` on all authenticated API routes.
+- ✅ **Pagination** — `CertificateController::index` now respects `per_page` query parameter (default 15).
+- ✅ **N+1 guard** — `CourseModuleController::index` eager-loads `lessons` (used by `CourseModuleResource`).
+- ✅ **Resource consistency** — `updated_at` added to all 18 resources that were missing it (DepartmentResource, PositionResource, EmployeeResource, ApplicantResource, JobRequisitionResource, ApplicationResource, InterviewResource, OfferResource, OnboardingTemplateResource, OnboardingTaskResource, OnboardingAssignmentResource, CourseResource, CourseModuleResource, LessonResource, QuizResource, QuestionResource, QuestionOptionResource, QuizAttemptResource, AppNotificationResource).
+- ✅ **Tests** — `TenantBoundaryTest` (7 assertions covering all three security fixes).
+- ✅ **Total: 596 tests, 1164 assertions — all passing.**
 
 ### Frontend — React SPA ⬜
 - ⬜ `hcm-frontend/` project scaffold (Vite + React 19 + TypeScript).

@@ -21,6 +21,7 @@ class LessonResource extends JsonResource
             'sort_order'       => $this->sort_order,
             'is_required'      => $this->is_required,
             'created_at'       => $this->created_at,
+            'updated_at'       => $this->updated_at,
         ];
     }
 }

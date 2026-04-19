@@ -18,6 +18,7 @@ class OnboardingTemplateResource extends JsonResource
             'position'    => new PositionResource($this->whenLoaded('position')),
             'tasks'       => OnboardingTaskResource::collection($this->whenLoaded('tasks')),
             'created_at'  => $this->created_at,
+            'updated_at'  => $this->updated_at,
         ];
     }
 }

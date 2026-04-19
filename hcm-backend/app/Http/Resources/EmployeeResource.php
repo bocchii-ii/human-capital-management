@@ -33,6 +33,7 @@ class EmployeeResource extends JsonResource
             'manager'          => new self($this->whenLoaded('manager')),
             'direct_reports'   => self::collection($this->whenLoaded('directReports')),
             'created_at'       => $this->created_at,
+            'updated_at'       => $this->updated_at,
         ];
     }
 }

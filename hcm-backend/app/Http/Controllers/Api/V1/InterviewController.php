@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InterviewResource;
+use App\Models\Application;
 use App\Models\Interview;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,6 +42,12 @@ class InterviewController extends Controller
             'location'         => ['nullable', 'string', 'max:500'],
             'notes'            => ['nullable', 'string'],
         ]);
+
+        abort_if(
+            ! Application::where('id', $data['application_id'])->where('tenant_id', $tenant->id)->exists(),
+            422,
+            'Application not found in this tenant.'
+        );
 
         $interview = Interview::create(array_merge($data, ['tenant_id' => $tenant->id]));
         $interview->load(['interviewer']);

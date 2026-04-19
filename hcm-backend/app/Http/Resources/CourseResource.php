@@ -21,6 +21,7 @@ class CourseResource extends JsonResource
             'creator'      => new UserResource($this->whenLoaded('creator')),
             'modules'      => CourseModuleResource::collection($this->whenLoaded('modules')),
             'created_at'   => $this->created_at,
+            'updated_at'   => $this->updated_at,
         ];
     }
 }
