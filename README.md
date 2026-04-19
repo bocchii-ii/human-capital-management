@@ -94,7 +94,7 @@ The test suite uses SQLite in-memory — no additional database setup needed.
 php artisan test
 ```
 
-Current status: **544 tests, 1056 assertions — all passing.**
+Current status: **589 tests, 1157 assertions — all passing.**
 
 ---
 
@@ -405,6 +405,47 @@ Certificates are issued automatically when an enrollment completes, and can be r
 
 ---
 
+### Dashboard & Reporting
+
+All dashboard endpoints require `reporting.dashboard.view` permission (HR Admin, Trainer).
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/dashboard` | Overview stats: employees, hiring, onboarding, training |
+| `GET` | `/dashboard/hiring` | Requisitions by status, applications by stage, hires per month |
+| `GET` | `/dashboard/onboarding` | Assignments by status, completion rate |
+| `GET` | `/dashboard/training` | Enrollments by status, completion rate, certificates, courses by category |
+
+---
+
+### Notifications
+
+Users see only their own notifications. No special permission required.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/notifications` | List own notifications (filter: `unread_only=1`; `meta.unread_count` in response) |
+| `GET` | `/notifications/{id}` | Show notification (auto-marks as read) |
+| `POST` | `/notifications/{id}/read` | Mark a specific notification as read |
+| `POST` | `/notifications/read-all` | Mark all unread notifications as read |
+| `DELETE` | `/notifications/{id}` | Delete a notification |
+
+Auto-dispatched on: enrollment completed, certificate issued, onboarding checklist assigned.
+
+---
+
+### Audit Logs
+
+Requires `audit.logs.view` permission (HR Admin, Super Admin).
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/audit-logs` | Paginated log (filter: `event`, `user_id`, `auditable_type`, `from`, `to`) |
+
+Recorded on: user login, application stage changes, offer sent/accepted/declined, onboarding assignment created, enrollment completed.
+
+---
+
 ## RBAC
 
 Roles and permissions are managed via `spatie/laravel-permission` with `teams` mode enabled, so each role is scoped per tenant.
@@ -446,7 +487,7 @@ Roles and permissions are managed via `spatie/laravel-permission` with `teams` m
 | **2 — Hiring / ATS** | ✅ Complete | Requisitions, applicants, pipeline, interviews, offers |
 | **3 — Onboarding** | ✅ Complete | Templates, tasks, assignments, task completion tracking |
 | **4 — Training / LMS** | ✅ Complete | **4a ✅** Courses, modules, lessons · **4b ✅** Quizzes, questions, options, attempts · **4c ✅** Enrollment, progress, learning paths · **4d ✅** Certificates (PDF, auto-issue, download) |
-| **5 — Reporting** | ⬜ Pending | Dashboards, notifications, audit log |
+| **5 — Reporting** | ✅ Complete | **5a ✅** Dashboard (overview + hiring/onboarding/training) · **5b ✅** Notifications center · **5c ✅** Audit log viewer |
 | **Frontend** | ⬜ Pending | React SPA for all modules |
 
 See [`plan.md`](./plan.md) for the full technical specification and detailed roadmap.

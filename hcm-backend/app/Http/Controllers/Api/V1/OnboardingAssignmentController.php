@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OnboardingAssignmentResource;
 use App\Http\Resources\OnboardingTaskCompletionResource;
+use App\Models\Employee;
 use App\Models\OnboardingAssignment;
 use App\Models\OnboardingTask;
 use App\Models\OnboardingTaskCompletion;
+use App\Services\AuditService;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -15,6 +18,10 @@ use Illuminate\Validation\Rule;
 
 class OnboardingAssignmentController extends Controller
 {
+    public function __construct(
+        private AuditService $audit,
+        private NotificationService $notifications,
+    ) {}
     public function index(Request $request): AnonymousResourceCollection
     {
         $tenant = app('tenant');
@@ -48,6 +55,21 @@ class OnboardingAssignmentController extends Controller
         ]));
 
         $assignment->load(['employee', 'template', 'assignedBy']);
+
+        $this->audit->log('onboarding.assignment.created', $assignment, null, ['status' => 'pending']);
+
+        $employee = $assignment->employee;
+        if ($employee?->user_id) {
+            $templateName = $assignment->template?->name ?? 'an onboarding checklist';
+            $this->notifications->create(
+                $tenant->id,
+                $employee->user_id,
+                'onboarding.assigned',
+                'Onboarding Checklist Assigned',
+                "You have been assigned \"{$templateName}\". Welcome!",
+                ['assignment_id' => $assignment->id],
+            );
+        }
 
         return (new OnboardingAssignmentResource($assignment))->response()->setStatusCode(201);
     }

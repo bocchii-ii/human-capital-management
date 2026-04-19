@@ -8,7 +8,11 @@ use App\Models\LessonProgress;
 
 class EnrollmentCompletionService
 {
-    public function __construct(private CertificateService $certificateService) {}
+    public function __construct(
+        private CertificateService $certificateService,
+        private NotificationService $notificationService,
+        private AuditService $auditService,
+    ) {}
 
     public function markLessonCompleted(Enrollment $enrollment, Lesson $lesson): void
     {
@@ -54,7 +58,29 @@ class EnrollmentCompletionService
         $enrollment->update($attrs);
 
         if (! $wasCompleted && ($attrs['status'] ?? null) === 'completed') {
-            $this->certificateService->generate($enrollment->fresh());
+            $fresh = $enrollment->fresh();
+            $this->certificateService->generate($fresh);
+
+            $this->auditService->log(
+                'enrollment.completed',
+                $fresh,
+                ['status' => 'in_progress'],
+                ['status' => 'completed'],
+                $fresh->tenant_id,
+            );
+
+            $userId = $fresh->employee?->user_id ?? $fresh->employee()->first()?->user_id;
+            if ($userId) {
+                $courseName = $fresh->course?->title ?? $fresh->course()->first()?->title ?? 'a course';
+                $this->notificationService->create(
+                    $fresh->tenant_id,
+                    $userId,
+                    'enrollment.completed',
+                    'Course Completed',
+                    "Congratulations! You have completed \"{$courseName}\".",
+                    ['enrollment_id' => $fresh->id, 'course_id' => $fresh->course_id],
+                );
+            }
         }
     }
 }

@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OfferResource;
 use App\Models\Application;
 use App\Models\Offer;
+use App\Services\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class OfferController extends Controller
 {
+    public function __construct(private AuditService $audit) {}
     public function store(Request $request): JsonResponse
     {
         $this->authorize('create', Offer::class);
@@ -85,6 +87,8 @@ class OfferController extends Controller
             'stage_changed_at' => now(),
         ]);
 
+        $this->audit->log('offer.sent', $offer, ['status' => 'draft'], ['status' => 'sent']);
+
         return new OfferResource($offer);
     }
 
@@ -106,7 +110,15 @@ class OfferController extends Controller
             $offer->application->update(['stage' => 'rejected', 'stage_changed_at' => now()]);
         }
 
+        $oldStatus = $offer->status;
         $offer->update(array_merge($data, $extra));
+
+        $this->audit->log(
+            "offer.{$data['status']}",
+            $offer,
+            ['status' => $oldStatus],
+            ['status' => $data['status']],
+        );
 
         return new OfferResource($offer);
     }

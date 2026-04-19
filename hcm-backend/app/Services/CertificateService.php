@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 
 class CertificateService
 {
+    public function __construct(private NotificationService $notificationService) {}
     public function generate(Enrollment $enrollment): Certificate
     {
         $enrollment->loadMissing(['employee', 'course']);
@@ -35,6 +36,19 @@ class CertificateService
         Storage::put($path, $pdf->output());
 
         $certificate->update(['pdf_path' => $path]);
+
+        $userId = $enrollment->employee?->user_id;
+        if ($userId) {
+            $courseName = $enrollment->course?->title ?? 'a course';
+            $this->notificationService->create(
+                $certificate->tenant_id,
+                $userId,
+                'certificate.issued',
+                'Certificate Ready',
+                "Your certificate for \"{$courseName}\" is ready to download.",
+                ['certificate_id' => $certificate->id, 'course_id' => $certificate->course_id],
+            );
+        }
 
         return $certificate->fresh();
     }

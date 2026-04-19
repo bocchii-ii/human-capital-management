@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ApplicationResource;
 use App\Models\Application;
 use App\Models\JobRequisition;
+use App\Services\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -13,6 +14,7 @@ use Illuminate\Validation\Rule;
 
 class ApplicationController extends Controller
 {
+    public function __construct(private AuditService $audit) {}
     public function index(Request $request): AnonymousResourceCollection
     {
         $tenant = app('tenant');
@@ -76,7 +78,15 @@ class ApplicationController extends Controller
             'notes'            => ['nullable', 'string'],
         ]);
 
+        $oldStage = $application->stage;
         $application->update(array_merge($data, ['stage_changed_at' => now()]));
+
+        $this->audit->log(
+            'application.stage_changed',
+            $application,
+            ['stage' => $oldStage],
+            ['stage' => $data['stage']],
+        );
 
         return new ApplicationResource($application->load(['applicant', 'jobRequisition']));
     }

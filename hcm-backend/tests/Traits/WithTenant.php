@@ -61,6 +61,7 @@ trait WithTenant
             'training.course.view', 'training.course.publish', 'training.course.manage',
             'training.enrollment.manage', 'training.report.view',
             'hr.employee.view', 'hr.employee.manage', 'hr.department.manage',
+            'reporting.dashboard.view', 'audit.logs.view',
         ];
 
         foreach ($permissions as $perm) {
@@ -78,7 +79,7 @@ trait WithTenant
                 'hiring.interview.schedule', 'hiring.offer.create', 'hiring.offer.send',
                 'hr.employee.view',
             ],
-            'Trainer'   => ['training.course.view', 'training.course.publish', 'training.course.manage', 'training.enrollment.manage', 'training.report.view'],
+            'Trainer'   => ['training.course.view', 'training.course.publish', 'training.course.manage', 'training.enrollment.manage', 'training.report.view', 'reporting.dashboard.view'],
             'Employee'  => ['training.course.view', 'hr.employee.view'],
         ];
 

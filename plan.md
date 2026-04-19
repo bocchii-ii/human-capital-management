@@ -240,11 +240,47 @@ A Human Capital Management (HCM) platform for companies to manage **onboarding**
 - ✅ Feature tests: `CertificateTest` (14 tests — index, show, download, issue, re-issue, permission gates, auto-generation integration).
 - ✅ **Total: 544 tests, 1056 assertions — all passing.**
 
-### Phase 5 — Reporting & Polish ⬜
-- ⬜ Admin dashboards (hires per month, onboarding completion %, training compliance).
-- ⬜ Notifications center.
-- ⬜ Audit log viewer.
-- ⬜ Accessibility & performance pass.
+### Phase 5 — Reporting & Polish ✅
+
+#### Phase 5a — Dashboard / Reporting ✅
+- ✅ New permissions: `reporting.dashboard.view` (HR Admin, Trainer), `audit.logs.view` (HR Admin).
+- ✅ `DashboardController` — 4 endpoints: `GET /dashboard` (overview), `/dashboard/hiring`, `/dashboard/onboarding`, `/dashboard/training`; all gated by `reporting.dashboard.view`.
+- ✅ Overview: employee totals, open requisitions, onboarding counts, active enrollments + certificate count.
+- ✅ Hiring: requisitions by status, applications by stage, hires per month (last 12 months).
+- ✅ Onboarding: assignments by status, completion rate %.
+- ✅ Training: enrollments by status, completion rate, certificates issued (total + this month), courses by category.
+- ✅ `TenantPolicy` — `viewDashboard` ability.
+
+#### Phase 5b — Notifications Center ✅
+- ✅ Migration: `app_notifications` (tenant_id, user_id, type, title, body, payload JSON, read_at nullable).
+- ✅ Model: `AppNotification` with `isRead()` / `markAsRead()` helpers; `refresh()` after mark to keep in-memory state consistent.
+- ✅ Factory with `read` state.
+- ✅ Resource: `AppNotificationResource` (exposes `is_read` bool, `payload` JSON; named `payload` to avoid `data` wrapper conflict).
+- ✅ `NotificationController` — index (with `unread_count` in `meta`), show (auto-marks read), mark-read, mark-all-read, destroy.
+- ✅ `NotificationService::create()` / `notifyUser()`.
+- ✅ Integration triggers:
+  - `EnrollmentCompletionService` → `enrollment.completed` notification to employee user.
+  - `CertificateService` → `certificate.issued` notification to employee user.
+  - `OnboardingAssignmentController` → `onboarding.assigned` notification to employee user.
+
+#### Phase 5c — Audit Log Viewer ✅
+- ✅ Migration: `audit_logs` (tenant_id, user_id, event, auditable_type/id, old/new_values JSON, ip_address, created_at only — no updated_at).
+- ✅ Model: `AuditLog` (`$timestamps = false`; `created_at` auto-set via model event).
+- ✅ Resource: `AuditLogResource` (includes eager-loaded user).
+- ✅ `AuditLogController` — index with filters: `event`, `user_id`, `auditable_type`, `from`, `to`; gated by `audit.logs.view`.
+- ✅ `AuditLogPolicy` — `viewAny`.
+- ✅ `AuditService::log()` — tenant + user from request context; no-ops when tenant not bound.
+- ✅ Integration points:
+  - `AuthController::login` → `user.login`.
+  - `ApplicationController::updateStage` → `application.stage_changed`.
+  - `OfferController::send` → `offer.sent`.
+  - `OfferController::updateStatus` → `offer.accepted` / `offer.declined` / `offer.withdrawn`.
+  - `OnboardingAssignmentController::store` → `onboarding.assignment.created`.
+  - `EnrollmentCompletionService::recompute` → `enrollment.completed`.
+- ✅ **Total: 589 tests, 1157 assertions — all passing.**
+
+#### Phase 5d ⬜
+- ⬜ Accessibility & performance pass (API pagination defaults, N+1 guards, rate limiting).
 - ⬜ UAT + bugfix.
 
 ### Frontend — React SPA ⬜

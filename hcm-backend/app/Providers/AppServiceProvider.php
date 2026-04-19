@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Applicant;
 use App\Models\Application;
+use App\Models\AuditLog;
 use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\CourseModule;
@@ -15,6 +16,7 @@ use App\Models\JobRequisition;
 use App\Models\Lesson;
 use App\Models\LearningPath;
 use App\Models\LearningPathCourse;
+use App\Models\Tenant;
 use App\Models\Offer;
 use App\Models\OnboardingAssignment;
 use App\Models\OnboardingTask;
@@ -26,6 +28,7 @@ use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Policies\ApplicantPolicy;
 use App\Policies\ApplicationPolicy;
+use App\Policies\AuditLogPolicy;
 use App\Policies\CertificatePolicy;
 use App\Policies\CourseModulePolicy;
 use App\Policies\CoursePolicy;
@@ -46,6 +49,7 @@ use App\Policies\QuestionOptionPolicy;
 use App\Policies\QuestionPolicy;
 use App\Policies\QuizAttemptPolicy;
 use App\Policies\QuizPolicy;
+use App\Policies\TenantPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -58,6 +62,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Reporting & Audit
+        Gate::policy(Tenant::class, TenantPolicy::class);
+        Gate::policy(AuditLog::class, AuditLogPolicy::class);
+
         // Core HR
         Gate::policy(Department::class, DepartmentPolicy::class);
         Gate::policy(Position::class, PositionPolicy::class);

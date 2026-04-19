@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\V1\ApplicantController;
+use App\Http\Controllers\Api\V1\AuditLogController;
 use App\Http\Controllers\Api\V1\CertificateController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\EnrollmentController;
 use App\Http\Controllers\Api\V1\LearningPathController;
 use App\Http\Controllers\Api\V1\LearningPathCourseController;
@@ -21,6 +23,7 @@ use App\Http\Controllers\Api\V1\DepartmentController;
 use App\Http\Controllers\Api\V1\EmployeeController;
 use App\Http\Controllers\Api\V1\InterviewController;
 use App\Http\Controllers\Api\V1\JobRequisitionController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OfferController;
 use App\Http\Controllers\Api\V1\PositionController;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +88,22 @@ Route::prefix('v1')->group(function () {
         Route::post('learning-paths/{learningPath}/assign', [LearningPathController::class, 'assign']);
         Route::apiResource('learning-paths', LearningPathController::class);
         Route::apiResource('learning-path-courses', LearningPathCourseController::class);
+
+        // Reporting & Dashboard
+        Route::get('dashboard', [DashboardController::class, 'overview']);
+        Route::get('dashboard/hiring', [DashboardController::class, 'hiring']);
+        Route::get('dashboard/onboarding', [DashboardController::class, 'onboarding']);
+        Route::get('dashboard/training', [DashboardController::class, 'training']);
+
+        // Notifications (explicit to control route-parameter name for model binding)
+        Route::get('notifications', [NotificationController::class, 'index']);
+        Route::post('notifications/read-all', [NotificationController::class, 'markAllRead']);
+        Route::get('notifications/{appNotification}', [NotificationController::class, 'show']);
+        Route::post('notifications/{appNotification}/read', [NotificationController::class, 'markRead']);
+        Route::delete('notifications/{appNotification}', [NotificationController::class, 'destroy']);
+
+        // Audit Logs
+        Route::apiResource('audit-logs', AuditLogController::class)->only(['index']);
 
         // Onboarding
         Route::apiResource('onboarding-templates', OnboardingTemplateController::class);

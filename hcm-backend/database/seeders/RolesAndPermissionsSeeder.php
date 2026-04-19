@@ -44,6 +44,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'hr.employee.view',
             'hr.employee.manage',
             'hr.department.manage',
+
+            // Reporting & Audit
+            'reporting.dashboard.view',
+            'audit.logs.view',
         ];
 
         foreach ($permissions as $permission) {
@@ -61,7 +65,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
             'Trainer' => [
                 'training.course.view', 'training.course.publish', 'training.course.manage',
-                'training.enrollment.manage', 'training.report.view',
+                'training.enrollment.manage', 'training.report.view', 'reporting.dashboard.view',
             ],
             'Employee' => [
                 'training.course.view',
